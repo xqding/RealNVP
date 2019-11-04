@@ -12,43 +12,48 @@ class Affine_Coupling(nn.Module):
         super(Affine_Coupling, self).__init__()
         self.input_dim = len(mask)
         self.hidden_dim = hidden_dim
-        
+
+        ## mask to seperate positions that do not change and positions that change.
+        ## mask[i] = 1 means the ith position does not change.
         self.mask = nn.Parameter(mask, requires_grad = False)
-        
+
+        ## layers used to compute scale in affine transformation
         self.scale_fc1 = nn.Linear(self.input_dim, self.hidden_dim)
         self.scale_fc2 = nn.Linear(self.hidden_dim, self.hidden_dim)
         self.scale_fc3 = nn.Linear(self.hidden_dim, self.input_dim)
         self.scale = nn.Parameter(torch.Tensor(self.input_dim))
         init.normal_(self.scale)
-        
+
+        ## layers used to compute translation in affine transformation 
         self.translation_fc1 = nn.Linear(self.input_dim, self.hidden_dim)
         self.translation_fc2 = nn.Linear(self.hidden_dim, self.hidden_dim)
         self.translation_fc3 = nn.Linear(self.hidden_dim, self.input_dim)
-        
+
+    def _compute_scale(self, x):
+        s = torch.relu(self.scale_fc1(x*self.mask))
+        s = torch.relu(self.scale_fc2(s))
+        s = torch.relu(self.scale_fc3(s)) * self.scale        
+        return s
+
+    def _compute_translation(self, x):
+        t = torch.relu(self.translation_fc1(x*self.mask))
+        t = torch.relu(self.translation_fc2(t))
+        t = self.translation_fc3(t)        
+        return t
+    
     def forward(self, x):
-        s = functional.leaky_relu(self.scale_fc1(x*self.mask))
-        s = functional.leaky_relu(self.scale_fc2(s))
-        s = torch.tanh(self.scale_fc3(s)) * self.scale
+        s = self._compute_scale(x)
+        t = self._compute_translation(x)
         
-        t = functional.leaky_relu(self.translation_fc1(x*self.mask))
-        t = functional.leaky_relu(self.translation_fc2(t))
-        t = self.translation_fc3(t)
-        
-        y = self.mask*x + (1-self.mask)*(x*torch.exp(s) + t)
-        
+        y = self.mask*x + (1-self.mask)*(x*torch.exp(s) + t)        
         logdet = torch.sum((1 - self.mask)*s, -1)
         
         return y, logdet
 
     def inverse(self, y):
-        s = torch.relu(self.scale_fc1(y*self.mask))
-        s = torch.relu(self.scale_fc2(s))
-        s = torch.tanh(self.scale_fc3(s)) * self.scale
-
-        t = torch.relu(self.translation_fc1(y*self.mask))
-        t = torch.relu(self.translation_fc2(t))
-        t = self.translation_fc3(t)
-        
+        s = self._compute_scale(y)
+        t = self._compute_translation(y)
+                
         x = self.mask*y + (1-self.mask)*((y - t)*torch.exp(-s))
         logdet = torch.sum((1 - self.mask)*(-s), -1)
         
