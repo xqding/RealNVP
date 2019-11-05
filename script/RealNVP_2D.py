@@ -78,12 +78,21 @@ class RealNVP_2D(nn.Module):
         for i in range(len(self.affine_couplings)):
             y, logdet = self.affine_couplings[i](y)
             logdet_tot = logdet_tot + logdet
-                
+
+        logdet = torch.sum(torch.log(torch.abs(4*(1-(torch.tanh(y))**2))), -1)        
+        y = 4*torch.tanh(y)
+        logdet_tot = logdet_tot + logdet
+        
         return y, logdet_tot
 
     def inverse(self, y):
-        x = y
+        x = y        
         logdet_tot = 0
+
+        logdet = torch.sum(torch.log(torch.abs(1.0/4.0* 1/(1-(x/4)**2))), -1)
+        x  = 0.5*torch.log((1+x/4)/(1-x/4))
+        logdet_tot = logdet_tot + logdet
+        
         for i in range(len(self.affine_couplings)-1, -1, -1):
             x, logdet = self.affine_couplings[i].inverse(x)
             logdet_tot = logdet_tot + logdet

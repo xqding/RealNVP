@@ -20,6 +20,7 @@ masks = [[1.0, 0.0],
          [0.0, 1.0],
          [1.0, 0.0],
          [0.0, 1.0]]
+
 hidden_dim = 128
 realNVP = RealNVP_2D(masks, hidden_dim)
 realNVP = realNVP.cuda()
@@ -30,7 +31,8 @@ for idx_step in range(num_steps):
     Z = torch.normal(0, 1, size = (1024, 2))
     Z = Z.cuda()
     X, logdet = realNVP(Z)
-    logp = compute_logp1(X)
+
+    logp = compute_logp4(X)
     loss = torch.mean(-logdet - logp)
     
     optimizer.zero_grad()
@@ -47,5 +49,7 @@ x = x.cpu().detach().numpy()
 fig = plt.figure(0)
 fig.clf()
 plt.plot(x[:,0], x[:,1], ".")
+# plt.xlim([-4,4])
+# plt.ylim([-4,4])
 plt.savefig("./output/samples_x.pdf")
 
