@@ -12,6 +12,9 @@ import matplotlib.pyplot as plt
 from RealNVP_2D import *
 from functions import *
 
+## Masks used to define the number and the type of affine coupling layers
+## In each mask, 1 means that the variable at the correspoding position is
+## kept fixed in the affine couling layer
 masks = [[1.0, 0.0],
          [0.0, 1.0],
          [1.0, 0.0],         
@@ -21,12 +24,19 @@ masks = [[1.0, 0.0],
          [1.0, 0.0],
          [0.0, 1.0]]
 
+## dimenstion of hidden units used in scale and translation transformation
 hidden_dim = 128
+
+## construct the RealNVP_2D object
 realNVP = RealNVP_2D(masks, hidden_dim)
-realNVP = realNVP.cuda()
+if torch.cuda.device_count():
+    realNVP = realNVP.cuda()
+    
 optimizer = optim.Adam(realNVP.parameters(), lr = 0.0001)
 num_steps = 5000
 
+## the following loop learns the RealNVP_2D model by potential energy
+## defined in the ./script/functions.py
 for idx_step in range(num_steps):
     Z = torch.normal(0, 1, size = (1024, 2))
     Z = Z.cuda()

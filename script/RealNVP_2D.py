@@ -29,7 +29,7 @@ class Affine_Coupling(nn.Module):
         self.translation_fc2 = nn.Linear(self.hidden_dim, self.hidden_dim)
         self.translation_fc3 = nn.Linear(self.hidden_dim, self.input_dim)
 
-    def _compute_scale(self, x):
+    def _compute_scale(self, x):        
         s = torch.relu(self.scale_fc1(x*self.mask))
         s = torch.relu(self.scale_fc2(s))
         s = torch.relu(self.scale_fc3(s)) * self.scale        
