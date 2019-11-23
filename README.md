@@ -21,3 +21,8 @@ The corresponding inverse transformation can transform samples of standard norma
 
 ## 2. Train models with the real NVP method using potential energy.
 Four models are trained to approximate four distributions defined using four potential energies. In the training, only the potential energy functions are used. These four potential energy functions are from [the normalizing flow paper](https://arxiv.org/abs/1505.05770). 
+The following figure shows the true distribution densities.
+![Figure](./output/true_prop.png)
+
+After training models with the above four density functions, we can generate samples from the model by transforming samples of standard normal distribution. These samples are shown in the follow figure.
+![Figure](./output/learn_by_potential_x_transformed_from_z.png)
