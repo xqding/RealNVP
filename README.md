@@ -14,5 +14,5 @@ In the first scenario, samples/data from the underlying distribution are availab
 In the second scenario, we know the unnormalized distribution density function and do not know its normalization factor. In this case, we want to train a model such that samples from the trained model approximate the unnormalized distribution density. In the following, the real NVP method is applied to train models in both scenarios. To make things simple, the distributions shown here are only two dimensional distributions, but similar ideas can be applied to high dimensional distributions.
 
 1. Train models with the real NVP method using samples.
-![Figure](./output/moon_z_transformed_from_x.pdf)
+![Figure](./output/moon_z_transformed_from_x.png)
 
