@@ -16,26 +16,26 @@ def compute_U1(z):
     mask = torch.ones_like(z)
     mask[:, 1] = 0.0
 
-    U = -(0.5*((torch.norm(z, dim = -1) - 2)/0.4)**2 - \
+    U = (0.5*((torch.norm(z, dim = -1) - 2)/0.4)**2 - \
              torch.sum(mask*torch.log(torch.exp(-0.5*((z - 2)/0.6)**2) +
                                       torch.exp(-0.5*((z + 2)/0.6)**2)), -1))    
     return U
 
 def compute_U2(z):
     w1 = torch.sin(2*math.pi*z[:,0]/4)
-    U = -0.5*((z[:,1] - w1)/0.4)**2    
+    U = 0.5*((z[:,1] - w1)/0.4)**2    
     return U
 
 def compute_U3(z):
     w1 = torch.sin(2*math.pi*z[:,0]/4)
     w2 = 3*torch.exp(-0.5*((z[:,0] - 1)/0.6)**2)
-    U = torch.log(torch.exp(-0.5*((z[:,1] - w1)/0.35)**2) + torch.exp(-0.5*((z[:,1] - w1 + w2)/0.35)**2))
+    U = -torch.log(torch.exp(-0.5*((z[:,1] - w1)/0.35)**2) + torch.exp(-0.5*((z[:,1] - w1 + w2)/0.35)**2))
     return U
     
 def compute_U4(z):
     w1 = torch.sin(2*math.pi*z[:,0]/4)
     w3 = 3*torch.sigmoid((z[:,0] - 1)/0.3)    
-    U = torch.log(torch.exp(-0.5*((z[:,1] - w1)/0.35)**2) + torch.exp(-0.5*((z[:,1] - w1 + w3)/0.35)**2))
+    U = -torch.log(torch.exp(-0.5*((z[:,1] - w1)/0.35)**2) + torch.exp(-0.5*((z[:,1] - w1 + w3)/0.35)**2))
     return U
 
 def _generate_grid():
@@ -55,25 +55,25 @@ def test_U():
     plt.subplot(1,4,1)
     U1 = compute_U1(z)
     U1 = U1.reshape(100, 100)    
-    p1 = torch.exp(U1)
+    p1 = torch.exp(-U1)
     plt.imshow(p1.T, origin = "lower", extent = (-4,4,-4,4))
     
     plt.subplot(1,4,2)
     U2 = compute_U2(z)
     U2 = U2.reshape(100, 100)    
-    p2 = torch.exp(U2)
+    p2 = torch.exp(-U2)
     plt.imshow(p2.T, origin = "lower", extent = (-4,4,-4,4))    
 
     plt.subplot(1,4,3)
     U3 = compute_U3(z)
     U3 = U3.reshape(100, 100)    
-    p3 = torch.exp(U3)
+    p3 = torch.exp(-U3)
     plt.imshow(p3.T, origin = "lower", extent = (-4,4,-4,4))    
     
     plt.subplot(1,4,4)
     U4 = compute_U4(z)
     U4 = U4.reshape(100, 100)    
-    p4 = torch.exp(U4)
+    p4 = torch.exp(-U4)
     plt.imshow(p4.T, origin = "lower", extent = (-4,4,-4,4))    
     
     plt.savefig("./output/true_prop.png")

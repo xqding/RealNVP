@@ -43,7 +43,7 @@ if torch.cuda.device_count():
     realNVP = realNVP.cuda()
     
 optimizer = optim.Adam(realNVP.parameters(), lr = 0.0001)
-num_steps = 10000
+num_steps = 5000
 
 ## the following loop learns the RealNVP_2D model by potential energy
 ## defined in the ./script/functions.py
@@ -52,7 +52,7 @@ for idx_step in range(num_steps):
     Z = Z.cuda()
     X, logdet = realNVP(Z)
 
-    logp = compute_U(X)
+    logp = -compute_U(X)
     loss = torch.mean(-logdet - logp)
     
     optimizer.zero_grad()
