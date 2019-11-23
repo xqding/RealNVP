@@ -16,4 +16,8 @@ In the second scenario, we know the unnormalized distribution density function a
 ## 1. Train models with the real NVP method using samples.
 Samples from [the moon dataset](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_moons.html#sklearn.datasets.make_moons), shown in the left of the following figure, are used to train a model with the real NVP method. After the training, these samples can be transformed into samples of standard normal distribution shown on the right.
 ![Figure](./output/moon_z_transformed_from_x.png)
+The corresponding inverse transformation can transform samples of standard normal distributions into samples of the moon dataset distribution as shown in the following figure. The left figure shows samples from a standard normal distribution and the righ figure shows the transformed samples.
+![Figure](./output/moon_x_transformed_from_z.png)
 
+## 2. Train models with the real NVP method using potential energy.
+Four models are trained to approximate four distributions defined using four potential energies. In the training, only the potential energy functions are used. These four potential energy functions are from [the normalizing flow paper](https://arxiv.org/abs/1505.05770). 
