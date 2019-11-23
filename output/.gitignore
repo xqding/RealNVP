@@ -1,6 +1,6 @@
 *
 !.gitignore
-!moon_x_transformed_from_z.pdf
-!moon_z_transformed_from_x.pdf
 !moon_x_transformed_from_z.png
 !moon_z_transformed_from_x.png
+!learn_by_potential_x_transformed_from_z_*.png
+!learn_by_potential_x_transformed_from_z_*.pkl

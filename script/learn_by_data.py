@@ -80,7 +80,7 @@ plt.plot(z[label==1,0], z[label==1,1], ".")
 plt.title("Z transformed from X")
 plt.xlabel(r"$z_1$")
 plt.ylabel(r"$z_2$")
-plt.savefig("./output/moon_z_transformed_from_x.pdf")
+plt.savefig("./output/moon_z_transformed_from_x.png")
 
 ## after learning, we can also test if the model can transform
 ## the normal distribution into the moon data distribution 
@@ -102,5 +102,5 @@ plt.plot(X[:,0], X[:,1], ".")
 plt.title("X transformed from Z")
 plt.xlabel(r"$x_1$")
 plt.ylabel(r"$x_2$")
-plt.savefig("./output/moon_x_transformed_from_z.pdf")
+plt.savefig("./output/moon_x_transformed_from_z.png")
 
